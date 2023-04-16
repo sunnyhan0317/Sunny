@@ -1,4 +1,5 @@
 from typing import List
+from random import randint
 import pygame as pg
 from Config import *
 from Model import *
@@ -44,8 +45,6 @@ def generate_wall(walls: List[Wall], player: Player, direction: int) -> None:
     direction -- 蛇的移動方向
     """
     # TODO
-
-    
     return
 
 
@@ -60,13 +59,17 @@ def generate_food(foods: List[Food], walls: List[Wall], player: Player) -> None:
     player -- 玩家物件
     """
     # TODO
-    return
+    random = PositionOBJ(randint(0, SCREEN_WIDTH), randint(0, SCREEN_HEIGHT))
+    all = [PositionOBJ(i.pos_x, i.pos_y) for i in walls]+[PositionOBJ(player.head_x, player.head_y)]
+    while check_GameOBJ_collision(random, all):
+        random = PositionOBJ(randint(0, SCREEN_WIDTH), randint(0, SCREEN_HEIGHT))
+        all = [PositionOBJ(i.pos_x, i.pos_y) for i in walls]+[PositionOBJ(player.head_x, player.head_y)]
+    foods.append(Food(random))
 
 
 def generate_poison(walls: List[Wall], foods: List[Food], player: Player) -> None:
     """
     在隨機位置生成一個 `Poison` 的物件並回傳，不能與現有其他物件或玩家重疊
-    無回傳值
 
     Keyword arguments:
     walls -- 牆壁物件的 list
@@ -74,7 +77,12 @@ def generate_poison(walls: List[Wall], foods: List[Food], player: Player) -> Non
     player -- 玩家物件
     """
     # TODO
-    return
+    random = PositionOBJ(randint(0, SCREEN_WIDTH), randint(0, SCREEN_HEIGHT))
+    all = [PositionOBJ(i.pos_x, i.pos_y) for i in walls] + [PositionOBJ(player.head_x, player.head_y)]
+    while check_GameOBJ_collision(random, all):
+        random = PositionOBJ(randint(0, SCREEN_WIDTH), randint(0, SCREEN_HEIGHT))
+        all = [PositionOBJ(i.pos_x, i.pos_y) for i in walls] + [PositionOBJ(player.head_x, player.head_y)]
+    return Poison(random)
 
 
 def calculate_time_interval(player: Player) -> int:
@@ -83,4 +91,4 @@ def calculate_time_interval(player: Player) -> int:
     蛇的長度每增加 4 幀數就 +1，從小到大，最大為 `TIME_INTERVAL_MAX`，最小為 `TIME_INTERVAL_MIN`
     """
     # TODO
-    return TIME_INTERVAL_MIN
+    return TIME_INTERVAL_MAX

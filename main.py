@@ -91,7 +91,8 @@ while running:
         screen.blit(food.surf, food.rect)
     for wall in walls:
         screen.blit(wall.surf, wall.rect)
-    screen.blit(poison.surf, poison.rect)
+    if poison:
+        screen.blit(poison.surf, poison.rect)
 
     # 把你的螢幕翻過來XD
     pg.display.flip()
