@@ -2,41 +2,25 @@ from typing import List
 from Config import *
 import pygame as pg
 
-
-class PositionOBJ:
-    """
-    遊戲基底物件
-    `self.pos_x``self.pos_y`等基礎函式
-    """
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    @property
-    def pos_x(self):
-        return self.x
-
-    @property
-    def pos_y(self):
-        return self.y
+# new
 
 
-def check_GameOBJ_collision(obj: PositionOBJ, all: List[PositionOBJ]):
-    """
-    偵測物件是否碰到其他物件
+def check_Collision(pos: List, objs: List):
+    '''
+    偵測待測座標是否與其他座標重疊
 
     Keyword arguments:
-        obj -- 待確認的物件PositionOBJ
-        all -- 所有要偵測碰撞物件的List[PositionOBJ]
+        pos -- 待確認物件的座標[x, y]
+        objs -- 其他座標[[x,y]]
 
     Return:
-        bool -- 是否碰到
-    """
-    x = obj.x
-    y = obj.y
-    for i in all:
-        if (x == i.pos_x and y == i.pos_y):
+        bool -- 是否重疊
+            True: 重疊
+            False: 無重疊
+    '''
+    positions = [[i[0], i[1]] for i in objs]
+    for i in positions:
+        if abs(i[0]-pos[0]) < SNAKE_SIZE and abs(i[1]-pos[1]) < SNAKE_SIZE:
             return True
     return False
 
@@ -50,7 +34,7 @@ class Food:
     def __init__(self, pos):
         self.surf = pg.surface.Surface(size=(SNAKE_SIZE, SNAKE_SIZE))
         self.surf.fill(FOOD_COLOR)
-        self.rect = self.surf.get_rect(topleft=[pos.pos_x, pos.pos_y])
+        self.rect = self.surf.get_rect(topleft=pos)
 
     @property
     def pos_x(self):
@@ -63,14 +47,14 @@ class Food:
 
 class Poison:
     """
-    毒藥物件，初始化方法為 `GameOBJ`
+    毒藥物件，初始化方法為 `Poison((左上角 x, 左上角 y))`
     `self.pos_x` 及 `self.pos_y` 為毒藥的座標
     """
 
     def __init__(self, pos):
         self.surf = pg.surface.Surface(size=(SNAKE_SIZE, SNAKE_SIZE))
         self.surf.fill(POISON_COLOR)
-        self.rect = self.surf.get_rect(topleft=[pos.pos_x, pos.pos_y])
+        self.rect = self.surf.get_rect(topleft=pos)
 
     @property
     def pos_x(self):
@@ -103,6 +87,7 @@ class Wall:
 
 class Player:
     """
+    玩家物件
     `self.snake_list` 紀錄每一段蛇的資訊 `(左上 x, 左上 y, 寬, 高)`
     `self.head_x` 及 `self.head_y` 為蛇頭的座標
     `self.length` 為蛇的長度
@@ -132,9 +117,10 @@ class Player:
         Keyword arguments:
         new_pos -- 新一節蛇身的座標 (左上 x, 左上 y)
         """
-        # TODO
+        # new
+        print(f"new_block{new_pos}")
         self.snake_list.append(
-            [new_pos[0], new_pos[1], SNAKE_SIZE, SNAKE_SIZE])
+            [new_pos[0]+SNAKE_SIZE, new_pos[1]+SNAKE_SIZE, SNAKE_SIZE, SNAKE_SIZE])
 
     def draw_snake(self, screen) -> None:
         """
@@ -145,7 +131,7 @@ class Player:
         Keyword arguments:
         screen -- pygame 螢幕物件
         """
-        # TODO
+        # new
         for i in self.snake_list:
             pg.draw.rect(screen, SNAKE_COLOR_BLUE, i)
 
@@ -158,8 +144,8 @@ class Player:
         Return:
         bool -- 蛇的頭有沒有超出螢幕範圍
         """
-        # TODO
-        if self.head_x > 700 or self.head_y > 600 or self.head_x < 0 or self.head_y < 0:
+        # new
+        if self.head_x > SCREEN_WIDTH-SNAKE_SIZE or self.head_y > SCREEN_HEIGHT-SNAKE_SIZE or self.head_x < 0 or self.head_y < 0:
             return True
         else:
             return False
@@ -177,7 +163,7 @@ class Player:
         Keyword arguments:
         direction -- 蛇的移動方向
         """
-        # TODO
+        # new
         if (direction == UP):
             for i in self.snake_list:
                 i[1] -= 1
@@ -190,7 +176,6 @@ class Player:
         elif (direction == RIGHT):
             for i in self.snake_list:
                 i[0] += 1
-        # print(self.snake_list)
 
     def detect_player_collision(self) -> bool:
         """
@@ -201,7 +186,7 @@ class Player:
         Return:
         bool -- 是否碰到蛇 (自己) 的其他段
         """
-        # TODO
+        # new
         return (self.snake_list.count(self.snake_list[0]) == 0)
 
     def detect_wall_collision(self, walls: List[Wall]) -> bool:
@@ -216,9 +201,9 @@ class Player:
         Return:
         bool -- 是否碰到牆壁
         """
-        # TODO
-        # print(walls)
-        return check_GameOBJ_collision(PositionOBJ(self.head_x, self.head_y), walls)
+        # new
+        # print(f"walls: {walls}")
+        return check_Collision([self.head_x, self.head_y], [[i.pos_x, i.pos_y] for i in walls])
 
     def detect_food_collision(self, foods: List[Food]) -> bool:
         """
@@ -232,8 +217,8 @@ class Player:
         Return:
         bool -- 是否碰到食物
         """
-        # TODO
-        return check_GameOBJ_collision(PositionOBJ(self.head_x, self.head_y), [PositionOBJ(i.pos_x, i.pos_y) for i in foods])
+        # new
+        return check_Collision([self.head_x, self.head_y], [[i.pos_x, i.pos_y] for i in foods])
 
     def detect_poison_collision(self, poison: Poison) -> bool:
         """
@@ -247,5 +232,5 @@ class Player:
         Return:
         bool -- 是否碰到毒藥
         """
-
-        # return 
+        # new
+        return check_Collision([self.head_x, self.head_y], [[poison.pos_x, poison.pos_y]])

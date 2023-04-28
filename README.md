@@ -1,2 +1,2 @@
 ### 待改善
-+ game_obj use extend
+移動時蛇跟著動

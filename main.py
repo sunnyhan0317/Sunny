@@ -59,6 +59,7 @@ while running:
     player.move(player_direction_key)
 
     # 各種物件碰撞判斷
+    print(f"last_block{last_block}",f"head_block{player.snake_list[0]}")
     if player.check_border():
         print("hit border")
         break
@@ -76,11 +77,11 @@ while running:
         poison = generate_poison(walls, foods, player)
     if player.detect_poison_collision(poison):
         player.snake_list.pop()
-        print("poison")
+        print("poison", player.length)
         if player.length == 0:
             break
         poison = generate_poison(walls, foods, player)
-
+    
     # 計算每秒的幀數 (fps)
     time_interval = calculate_time_interval(player)
 
