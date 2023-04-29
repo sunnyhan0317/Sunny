@@ -1,7 +1,11 @@
 import os
-os.remove("./log.txt")
+try:
+    os.remove("./log.txt")
+except:
+    pass
 
-env = "dev"
+# env = "dev"
+env = "prod"
 
 def debugLog(msg,/,title=""):
     if env == "dev":

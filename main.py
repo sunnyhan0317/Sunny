@@ -73,7 +73,7 @@ while running:
     if player.detect_food_collision(foods):
         player.new_block(last_block[:2])
         foods.pop()
-        wall_direction = generate_wall(walls, player, wall_direction)
+        generate_wall(walls, player, wall_direction)
         generate_food(foods, walls, player)
         poison = generate_poison(walls, foods, player)
     if player.detect_poison_collision(poison):

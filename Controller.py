@@ -1,6 +1,6 @@
 from typing import List
 import pygame as pg
-from random import randint
+from random import randint,choice
 from Config import *
 from Model import *
 from Debug import *
@@ -49,15 +49,38 @@ def generate_wall(walls: List[Wall], player: Player, direction: int) -> None:
     direction -- 蛇的移動方向
     """
     # new
-    # all_pos = [[i.pos_x, i.pos_y]
-    #            for i in walls]
-    # random_result = all_pos[randint(0, len(all_pos)-1)] if len(all_pos) > 0 else [
-    #     randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
-    # while check_Collision(random_result, all_pos):
-    #     random_result = [randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
-    #     all_pos = [[i.pos_x, i.pos_y]
-    #                for i in walls] + [[i.pos_x, i.pos_y] for i in walls]
-    # walls.append(Wall(random_result))
+    # random
+    all_walls = [[i.pos_x, i.pos_y] for i in walls]
+    all_pos = all_walls + [[i[0], i[1]] for i in player.snake_list]
+    if len(all_walls) == 0:
+        random_result = [randint(5, (SCREEN_WIDTH/SNAKE_SIZE)-6)*SNAKE_SIZE, randint(5, (SCREEN_HEIGHT/SNAKE_SIZE)-6)*SNAKE_SIZE]
+        while check_Collision(random_result, all_pos): 
+            random_result = [randint(0, (SCREEN_WIDTH/SNAKE_SIZE)-1)*SNAKE_SIZE, randint(0, (SCREEN_HEIGHT/SNAKE_SIZE)-1)*SNAKE_SIZE]
+    else:
+        selected_wall = choice(all_walls)
+        pos = direction
+        debugLog(pos,title="pos")
+        if pos == UP:
+            random_result = [selected_wall[0], selected_wall[1]-SNAKE_SIZE]
+        elif pos == DOWN:
+            random_result = [selected_wall[0], selected_wall[1]+SNAKE_SIZE]
+        elif pos == RIGHT:
+            random_result = [selected_wall[0]+SNAKE_SIZE, selected_wall[1]]
+        elif pos == LEFT:
+            random_result = [selected_wall[0]-SNAKE_SIZE, selected_wall[1]]
+        while check_Collision(random_result, all_pos): 
+            selected_wall = choice(all_walls)
+            if pos == 1:
+                random_result = [selected_wall[0]+SNAKE_SIZE, selected_wall[1]]
+            elif pos == 2:
+                random_result = [selected_wall[0], selected_wall[1]+SNAKE_SIZE]
+            elif pos == 3:
+                random_result = [selected_wall[0]-SNAKE_SIZE, selected_wall[1]]
+            elif pos == 4:
+                random_result = [selected_wall[0], selected_wall[1]-SNAKE_SIZE]
+    logging("new wall",random_result)
+    walls.append(Wall(random_result))
+    debugLog(walls,title="walls")
 
 
 def generate_food(foods: List[Food], walls: List[Wall], player: Player) -> None:
@@ -70,15 +93,12 @@ def generate_food(foods: List[Food], walls: List[Wall], player: Player) -> None:
     walls -- 牆壁物件的 list
     player -- 玩家物件
     """
-    # new TODO
-    # random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
-    random_result = [randint(player.head_x/SNAKE_SIZE, player.head_x/SNAKE_SIZE+5)*SNAKE_SIZE, randint(player.head_y/SNAKE_SIZE, player.head_y/SNAKE_SIZE+5)*SNAKE_SIZE]
+    # new
+    random_result = [randint(0, (SCREEN_WIDTH/SNAKE_SIZE)-1)*SNAKE_SIZE, randint(0, (SCREEN_HEIGHT/SNAKE_SIZE)-1)*SNAKE_SIZE]
     all_pos = [[i.pos_x, i.pos_y]
-               for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
+               for i in walls] + [[i.pos_x, i.pos_y] for i in foods] + [[i[0], i[1]] for i in player.snake_list]
     while check_Collision(random_result, all_pos):
-        random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
-        all_pos = [[i.pos_x, i.pos_y]
-                   for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
+        random_result = [randint(0, (SCREEN_WIDTH/SNAKE_SIZE)-1)*SNAKE_SIZE, randint(0, (SCREEN_HEIGHT/SNAKE_SIZE)-1)*SNAKE_SIZE]
     logging("new food",random_result)
     foods.append(Food(random_result))
 
@@ -93,14 +113,11 @@ def generate_poison(walls: List[Wall], foods: List[Food], player: Player) -> Non
     player -- 玩家物件
     """
     # new
-    # random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
-    random_result = [randint(player.head_x/SNAKE_SIZE, player.head_x/SNAKE_SIZE+5)*SNAKE_SIZE, randint(player.head_y/SNAKE_SIZE, player.head_y/SNAKE_SIZE+5)*SNAKE_SIZE]
+    random_result = [randint(0, (SCREEN_WIDTH/SNAKE_SIZE)-1)*SNAKE_SIZE, randint(0, (SCREEN_HEIGHT/SNAKE_SIZE)-1)*SNAKE_SIZE]
     all_pos = [[i.pos_x, i.pos_y]
-               for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
+               for i in walls] + [[i.pos_x, i.pos_y] for i in foods] + [[i[0], i[1]] for i in player.snake_list]
     while check_Collision(random_result, all_pos):
-        random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
-        all_pos = [[i.pos_x, i.pos_y]
-                   for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
+        random_result = [randint(0, (SCREEN_WIDTH/SNAKE_SIZE)-1)*SNAKE_SIZE, randint(0, (SCREEN_HEIGHT/SNAKE_SIZE)-1)*SNAKE_SIZE]
     logging("new poison", random_result)
     return Poison(random_result)
 
@@ -111,7 +128,7 @@ def calculate_time_interval(player: Player) -> int:
     蛇的長度每增加 4 幀數就 +1，從小到大，最大為 `TIME_INTERVAL_MAX`，最小為 `TIME_INTERVAL_MIN`
     """
     # new
-    fps = SNAKE_LENGTH//4+1
+    fps = 4+player.length//4
     if fps < TIME_INTERVAL_MIN:
         return TIME_INTERVAL_MIN
     elif fps > TIME_INTERVAL_MAX:
