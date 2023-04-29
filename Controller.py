@@ -66,11 +66,12 @@ def generate_food(foods: List[Food], walls: List[Wall], player: Player) -> None:
     player -- 玩家物件
     """
     # new
-    random_result = [randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
+    # random_result = [randint(player.head_x, player.head_x+35), randint(player.head_y, player.head_y+35)]
+    random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
     all_pos = [[i.pos_x, i.pos_y]
                for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
     while check_Collision(random_result, all_pos):
-        random_result = [randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
+        random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
         all_pos = [[i.pos_x, i.pos_y]
                    for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
     foods.append(Food(random_result))
@@ -86,11 +87,11 @@ def generate_poison(walls: List[Wall], foods: List[Food], player: Player) -> Non
     player -- 玩家物件
     """
     # new
-    random_result = [randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
+    random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
     all_pos = [[i.pos_x, i.pos_y]
                for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
     while check_Collision(random_result, all_pos):
-        random_result = [randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
+        random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
         all_pos = [[i.pos_x, i.pos_y]
                    for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
     return Poison(random_result)

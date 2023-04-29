@@ -54,12 +54,12 @@ while running:
     player_direction_key = player_direction_key if key == None else key
 
     # 將蛇的最後一格存起來，長度變長的時候要加回去
-    last_block = player.snake_list[-1]
+    last_block = player.snake_list[-1].copy()
 
     player.move(player_direction_key)
 
     # 各種物件碰撞判斷
-    print(f"last_block{last_block}",f"head_block{player.snake_list[0]}")
+    # print(f"last_block{last_block}",f"head_block{player.snake_list[0]}")
     if player.check_border():
         print("hit border")
         break

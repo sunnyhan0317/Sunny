@@ -2,8 +2,6 @@ from typing import List
 from Config import *
 import pygame as pg
 
-# new
-
 
 def check_Collision(pos: List, objs: List):
     '''
@@ -118,9 +116,9 @@ class Player:
         new_pos -- 新一節蛇身的座標 (左上 x, 左上 y)
         """
         # new
-        print(f"new_block{new_pos}")
+        print(f"new_block{new_pos}\nsnake_list{self.snake_list}")
         self.snake_list.append(
-            [new_pos[0]+SNAKE_SIZE, new_pos[1]+SNAKE_SIZE, SNAKE_SIZE, SNAKE_SIZE])
+            [new_pos[0], new_pos[1], SNAKE_SIZE, SNAKE_SIZE])
 
     def draw_snake(self, screen) -> None:
         """
@@ -166,16 +164,16 @@ class Player:
         # new
         if (direction == UP):
             for i in self.snake_list:
-                i[1] -= 1
+                i[1] -= SNAKE_SIZE
         elif (direction == DOWN):
             for i in self.snake_list:
-                i[1] += 1
+                i[1] += SNAKE_SIZE
         elif (direction == LEFT):
             for i in self.snake_list:
-                i[0] -= 1
+                i[0] -= SNAKE_SIZE
         elif (direction == RIGHT):
             for i in self.snake_list:
-                i[0] += 1
+                i[0] += SNAKE_SIZE
 
     def detect_player_collision(self) -> bool:
         """
