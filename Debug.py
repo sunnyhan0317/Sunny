@@ -5,6 +5,7 @@ except:
     pass
 
 # env = "dev"
+# env = "beta"
 env = "prod"
 
 def debugLog(msg,/,title=""):
@@ -14,6 +15,7 @@ def debugLog(msg,/,title=""):
         print(f"debugLog: {title} => {msg}")
 
 def logging(title, msg):
-    with open("./log.txt","a") as f:
-        f.write(f"{title} : {msg}\n")
-    print(f"{title} : {msg}")
+    if env != "prod":
+        with open("./log.txt","a") as f:
+            f.write(f"{title} : {msg}\n")
+        print(f"{title} : {msg}")

@@ -4,6 +4,7 @@
 ### 追加功能
 + 蛇頭特殊圖案by Inkscape `head.svg` (draw_snake)
 + 碰撞確認(`Model.py check_Collision`)
++ `Debug.py`: Logging、printLog
 
 
 ### 必要功能
