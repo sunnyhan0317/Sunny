@@ -1,7 +1,8 @@
 from typing import List
 from Config import *
 import pygame as pg
-
+from Debug import *
+import copy
 
 def check_Collision(pos: List, objs: List):
     '''
@@ -116,9 +117,10 @@ class Player:
         new_pos -- 新一節蛇身的座標 (左上 x, 左上 y)
         """
         # new
-        print(f"new_block{new_pos}\nsnake_list{self.snake_list}")
         self.snake_list.append(
             [new_pos[0], new_pos[1], SNAKE_SIZE, SNAKE_SIZE])
+        logging("new_block", new_pos)
+        logging("snake_list",self.snake_list)
 
     def draw_snake(self, screen) -> None:
         """
@@ -162,18 +164,21 @@ class Player:
         direction -- 蛇的移動方向
         """
         # new
+        ori_snake_list = copy.deepcopy(self.snake_list)
+        debugLog(ori_snake_list)
         if (direction == UP):
-            for i in self.snake_list:
-                i[1] -= SNAKE_SIZE
+            self.snake_list[0][1] -= SNAKE_SIZE
         elif (direction == DOWN):
-            for i in self.snake_list:
-                i[1] += SNAKE_SIZE
+            self.snake_list[0][1] += SNAKE_SIZE
         elif (direction == LEFT):
-            for i in self.snake_list:
-                i[0] -= SNAKE_SIZE
+            self.snake_list[0][0] -= SNAKE_SIZE
         elif (direction == RIGHT):
-            for i in self.snake_list:
-                i[0] += SNAKE_SIZE
+            self.snake_list[0][0] += SNAKE_SIZE
+        logging("setHead",self.snake_list[0])
+        for i in range(1,len(self.snake_list)):
+            debugLog(ori_snake_list)
+            logging("update_snake_list",f"{self.snake_list[i]} => {ori_snake_list[i-1]}")
+            self.snake_list[i] = ori_snake_list[i-1]
 
     def detect_player_collision(self) -> bool:
         """
@@ -200,7 +205,6 @@ class Player:
         bool -- 是否碰到牆壁
         """
         # new
-        # print(f"walls: {walls}")
         return check_Collision([self.head_x, self.head_y], [[i.pos_x, i.pos_y] for i in walls])
 
     def detect_food_collision(self, foods: List[Food]) -> bool:

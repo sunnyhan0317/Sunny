@@ -2,6 +2,7 @@ import pygame as pg
 from Config import *
 from Model import *
 from Controller import *
+from Debug import *
 import random
 
 """
@@ -59,7 +60,7 @@ while running:
     player.move(player_direction_key)
 
     # 各種物件碰撞判斷
-    # print(f"last_block{last_block}",f"head_block{player.snake_list[0]}")
+    debugLog(player.snake_list,title="snake_list")
     if player.check_border():
         print("hit border")
         break

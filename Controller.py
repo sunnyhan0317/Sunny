@@ -3,6 +3,7 @@ import pygame as pg
 from random import randint
 from Config import *
 from Model import *
+from Debug import *
 
 
 def key_input(pressed_keys: List):
@@ -12,15 +13,19 @@ def key_input(pressed_keys: List):
     """
     for key in pressed_keys:
         if key == pg.K_UP:
+            logging("KEY", "UP")
             movement = UP
             break
         if key == pg.K_DOWN:
+            logging("KEY", "DOWN")
             movement = DOWN
             break
         if key == pg.K_LEFT:
+            logging("KEY", "LEFT")
             movement = LEFT
             break
         if key == pg.K_RIGHT:
+            logging("KEY", "RIGHT")
             movement = RIGHT
             break
         if key == pg.K_a:
@@ -44,15 +49,15 @@ def generate_wall(walls: List[Wall], player: Player, direction: int) -> None:
     direction -- 蛇的移動方向
     """
     # new
-    all_pos = [[i.pos_x, i.pos_y]
-               for i in walls]
-    random_result = all_pos[randint(0, len(all_pos)-1)] if len(all_pos) > 0 else [
-        randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
-    while check_Collision(random_result, all_pos):
-        random_result = [randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
-        all_pos = [[i.pos_x, i.pos_y]
-                   for i in walls] + [[i.pos_x, i.pos_y] for i in walls]
-    walls.append(Wall(random_result))
+    # all_pos = [[i.pos_x, i.pos_y]
+    #            for i in walls]
+    # random_result = all_pos[randint(0, len(all_pos)-1)] if len(all_pos) > 0 else [
+    #     randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
+    # while check_Collision(random_result, all_pos):
+    #     random_result = [randint(0, SCREEN_WIDTH-SNAKE_SIZE), randint(0, SCREEN_HEIGHT-SNAKE_SIZE)]
+    #     all_pos = [[i.pos_x, i.pos_y]
+    #                for i in walls] + [[i.pos_x, i.pos_y] for i in walls]
+    # walls.append(Wall(random_result))
 
 
 def generate_food(foods: List[Food], walls: List[Wall], player: Player) -> None:
@@ -65,15 +70,16 @@ def generate_food(foods: List[Food], walls: List[Wall], player: Player) -> None:
     walls -- 牆壁物件的 list
     player -- 玩家物件
     """
-    # new
-    # random_result = [randint(player.head_x, player.head_x+35), randint(player.head_y, player.head_y+35)]
-    random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
+    # new TODO
+    # random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
+    random_result = [randint(player.head_x/SNAKE_SIZE, player.head_x/SNAKE_SIZE+5)*SNAKE_SIZE, randint(player.head_y/SNAKE_SIZE, player.head_y/SNAKE_SIZE+5)*SNAKE_SIZE]
     all_pos = [[i.pos_x, i.pos_y]
                for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
     while check_Collision(random_result, all_pos):
         random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
         all_pos = [[i.pos_x, i.pos_y]
                    for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
+    logging("new food",random_result)
     foods.append(Food(random_result))
 
 
@@ -87,13 +93,15 @@ def generate_poison(walls: List[Wall], foods: List[Food], player: Player) -> Non
     player -- 玩家物件
     """
     # new
-    random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
+    # random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
+    random_result = [randint(player.head_x/SNAKE_SIZE, player.head_x/SNAKE_SIZE+5)*SNAKE_SIZE, randint(player.head_y/SNAKE_SIZE, player.head_y/SNAKE_SIZE+5)*SNAKE_SIZE]
     all_pos = [[i.pos_x, i.pos_y]
                for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
     while check_Collision(random_result, all_pos):
         random_result = [randint(0, SCREEN_WIDTH/SNAKE_SIZE)*SNAKE_SIZE, randint(0, SCREEN_HEIGHT/SNAKE_SIZE)*SNAKE_SIZE]
         all_pos = [[i.pos_x, i.pos_y]
                    for i in walls] + [[i.pos_x, i.pos_y] for i in foods]
+    logging("new poison", random_result)
     return Poison(random_result)
 
 
