@@ -53,9 +53,9 @@ def generate_wall(walls: List[Wall], player: Player, direction: int) -> None:
     all_walls = [[i.pos_x, i.pos_y] for i in walls]
     all_pos = all_walls + [[i[0], i[1]] for i in player.snake_list]
     if len(all_walls) == 0:
-        random_result = [randint(5, (SCREEN_WIDTH/SNAKE_SIZE)-6)*SNAKE_SIZE, randint(5, (SCREEN_HEIGHT/SNAKE_SIZE)-6)*SNAKE_SIZE]
+        random_result = [randint(5, (SCREEN_WIDTH/SNAKE_SIZE)-6)*SNAKE_SIZE, randint(5, (SCREEN_HEIGHT/SNAKE_SIZE)-6)*SNAKE_SIZE] # -6的原因是讓毒藥不會生成在邊界附近，增加難度
         while check_Collision(random_result, all_pos): 
-            random_result = [randint(0, (SCREEN_WIDTH/SNAKE_SIZE)-1)*SNAKE_SIZE, randint(0, (SCREEN_HEIGHT/SNAKE_SIZE)-1)*SNAKE_SIZE]
+            random_result = [randint(5, (SCREEN_WIDTH/SNAKE_SIZE)-6)*SNAKE_SIZE, randint(5, (SCREEN_HEIGHT/SNAKE_SIZE)-6)*SNAKE_SIZE]
     else:
         selected_wall = choice(all_walls)
         pos = direction
@@ -70,14 +70,14 @@ def generate_wall(walls: List[Wall], player: Player, direction: int) -> None:
             random_result = [selected_wall[0]-SNAKE_SIZE, selected_wall[1]]
         while check_Collision(random_result, all_pos): 
             selected_wall = choice(all_walls)
-            if pos == 1:
-                random_result = [selected_wall[0]+SNAKE_SIZE, selected_wall[1]]
-            elif pos == 2:
-                random_result = [selected_wall[0], selected_wall[1]+SNAKE_SIZE]
-            elif pos == 3:
-                random_result = [selected_wall[0]-SNAKE_SIZE, selected_wall[1]]
-            elif pos == 4:
+            if pos == UP:
                 random_result = [selected_wall[0], selected_wall[1]-SNAKE_SIZE]
+            elif pos == DOWN:
+                random_result = [selected_wall[0], selected_wall[1]+SNAKE_SIZE]
+            elif pos == RIGHT:
+                random_result = [selected_wall[0]+SNAKE_SIZE, selected_wall[1]]
+            elif pos == LEFT:
+                random_result = [selected_wall[0]-SNAKE_SIZE, selected_wall[1]]
     logging("new wall",random_result)
     walls.append(Wall(random_result))
     debugLog(walls,title="walls")
@@ -113,11 +113,11 @@ def generate_poison(walls: List[Wall], foods: List[Food], player: Player) -> Non
     player -- 玩家物件
     """
     # new
-    random_result = [randint(0, (SCREEN_WIDTH/SNAKE_SIZE)-1)*SNAKE_SIZE, randint(0, (SCREEN_HEIGHT/SNAKE_SIZE)-1)*SNAKE_SIZE]
+    random_result = [randint(5, (SCREEN_WIDTH/SNAKE_SIZE)-6)*SNAKE_SIZE, randint(5, (SCREEN_HEIGHT/SNAKE_SIZE)-6)*SNAKE_SIZE] # -6的原因是讓毒藥不會生成在邊界附近，增加難度
     all_pos = [[i.pos_x, i.pos_y]
                for i in walls] + [[i.pos_x, i.pos_y] for i in foods] + [[i[0], i[1]] for i in player.snake_list]
     while check_Collision(random_result, all_pos):
-        random_result = [randint(0, (SCREEN_WIDTH/SNAKE_SIZE)-1)*SNAKE_SIZE, randint(0, (SCREEN_HEIGHT/SNAKE_SIZE)-1)*SNAKE_SIZE]
+        random_result = [randint(5, (SCREEN_WIDTH/SNAKE_SIZE)-6)*SNAKE_SIZE, randint(5, (SCREEN_HEIGHT/SNAKE_SIZE)-6)*SNAKE_SIZE] # -6的原因是讓毒藥不會生成在邊界附近，增加難度
     logging("new poison", random_result)
     return Poison(random_result)
 

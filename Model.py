@@ -132,10 +132,13 @@ class Player:
         screen -- pygame 螢幕物件
         """
         # new
-        rect = pg.image.load("head.svg").convert()
-        screen.blit(rect, (self.head_x, self.head_y))
+        surf = pg.image.load("head.svg").convert()
+        screen.blit(surf, (self.head_x, self.head_y))
         for i in range(1, len(self.snake_list)):
-            pg.draw.rect(screen, SNAKE_COLOR_BLUE, self.snake_list[i])
+            if i % 2 == 0:
+                pg.draw.rect(screen, SNAKE_COLOR_BLUE, self.snake_list[i])
+            else:
+                pg.draw.rect(screen, SNAKE_COLOR_YELLOW, self.snake_list[i])
 
     def check_border(self) -> bool:
         """
@@ -192,8 +195,11 @@ class Player:
         bool -- 是否碰到蛇 (自己) 的其他段
         """
         # new
-        debugLog(self.snake_list.count(self.snake_list[0]))
-        return not self.snake_list.count(self.snake_list[0])
+        if self.snake_list[0] in self.snake_list[1:]:
+            debugLog("hit self")
+            return True
+        else:
+            return False
 
     def detect_wall_collision(self, walls: List[Wall]) -> bool:
         """
