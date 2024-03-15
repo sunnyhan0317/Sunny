@@ -4,8 +4,7 @@
 
 ## 編輯底下這句
 
-我就是
-
+哈囉你好
 ## 存檔這個README.md
 
 ## 把整個repository傳到自己的GitHub然後傳給教學長
